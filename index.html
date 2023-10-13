@@ -8,10 +8,37 @@
 </head>
 <body>
     <div class="main">
-        <div class="title">ToDo List</div>
-        <div class="sidebar"></div>
+        <div class="title">📃Todo List</div>
+        <div class="sidebar">
+            <button id="new">New</button>
+        </div>
         <div class="content"></div>
     </div>
+    <form id="new-item-form">
+        <div class="form-title">New item</div>
+        <div class="form-field">
+            <label for="title">Task name:</label>
+            <input required id="title" name="title" type="text">
+        </div>
+        <div class="form-field">
+            <label for="desc">Description:</label>
+            <input required id="desc" name="desc" type="text">
+        </div>
+        <div class="form-field">
+            <label for="priority">Priority:</label>
+            <select name="priority" id="priority">
+                <option value="low">Low</option>
+                <option value="mid">Medium</option>
+                <option value="high">High</option>
+                <option value="max">Maximum</option>
+            </select>
+        </div>
+        <div class="form-field">
+            <label for="dueDate">Due date:</label>
+            <input required id="dueDate" name="dueDate" type="date">
+        </div>
+        <button type="submit" id="submit">Add</button>
+    </form>
 </body>
 <script src="main.js"></script>
 </html>
