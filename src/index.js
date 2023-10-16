@@ -8,22 +8,32 @@ newButton.addEventListener('click', () => {
     newForm.style.display = 'initial';
 })
 
-const addItem = function(title, desc, dueDate, priority) {
-    const item = new Item(title, desc, dueDate, priority, false);
-    const itemDiv = document.createElement('div')
-    itemDiv.classList.add('task');
-    for (const [key,value] of Object.entries(item)) {
-        const dataDiv = document.createElement('div');
-        dataDiv.classList.add(`task-${key}`);
-        dataDiv.textContent = `${key}: ${value}`;
-        itemDiv.appendChild(dataDiv);
-    }
-    taskContainer.appendChild(itemDiv);
+const itemList = [];
+
+const updatePage = function() {
+    taskContainer.innerHTML = '';
+    itemList.forEach(item => {
+        const itemDiv = document.createElement('div')
+        itemDiv.classList.add('task');
+        for (const [key,value] of Object.entries(item)) {
+            const dataDiv = document.createElement('div');
+            dataDiv.classList.add(`task-${key}`);
+            dataDiv.textContent = `${key}: ${value}`;
+            itemDiv.appendChild(dataDiv);
+        }
+        taskContainer.appendChild(itemDiv);
+    });
 }
 
 const submitButton = document.querySelector('button#submit')
 submitButton.addEventListener('click', (e) => {
-    newForm.style.display = '';
-    addItem(title.value, desc.value, dueDate.value, priority.value);
-    e.preventDefault();
+    if (newForm.checkValidity()) {
+        newForm.style.display = '';
+        itemList.push(new Item(title.value, desc.value, dueDate.value, priority.value, false));
+        updatePage();
+        newForm.reset();
+        e.preventDefault();
+    } else {
+        alert('Please fill all of the fields');
+    }
 })
