@@ -4,11 +4,23 @@ import Project from './projectCreator.js';
 const newButton = document.querySelector('button#new-task');
 const newForm = document.querySelector('form#new-item-form');
 const taskContainer = document.querySelector('div.content');
+const tabList = document.querySelector('div.tab-list');
 
-const projList = [new Project('Inbox')];
-let itemList;
+const projList = [];
 
 let currentTab = 'Inbox'; // Default
+let itemList;
+
+tabList.querySelectorAll('button').forEach(button => {
+    button.addEventListener('click', () => {
+        currentTab = button.id;
+        updateTab();
+        updatePage();
+        console.log(currentTab)
+    })
+    projList.push(new Project(`${button.id}`));
+    console.log(projList);
+});
 
 const updateTab = function() {
     return itemList = projList.find((element) => element.name === currentTab).itemList;
@@ -20,7 +32,6 @@ newButton.addEventListener('click', () => {
 
 const updatePage = function() {
     taskContainer.innerHTML = '';
-    updateTab();
     itemList.forEach(item => {
         const itemDiv = document.createElement('div')
         itemDiv.classList.add('task');
@@ -39,6 +50,9 @@ submitButton.addEventListener('click', (e) => {
     e.preventDefault();
     if (newForm.checkValidity()) {
         newForm.style.display = '';
+        if (currentTab == 'Today' || currentTab == 'Upcoming') {
+            currentTab = 'Inbox';
+        }
         updateTab();
         itemList.push(new Item(title.value, desc.value, dueDate.value, priority.value, false));
         updatePage();
@@ -56,7 +70,8 @@ newProject.addEventListener('click', () => {
         projList.push(new Project(projName));
         const newProj = document.createElement('button');
         newProj.textContent = projName;
-        newProj.addEventListener('click', () => {currentTab = projName; updatePage()});
+        newProj.id = projName;
+        newProj.addEventListener('click', () => {currentTab = projName; updateTab(); updatePage()});
         projectList.appendChild(newProj);
     } else if (projName.length == 0) {
         alert('Projects must have a name. Please try again.')
