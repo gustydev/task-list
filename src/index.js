@@ -1,5 +1,6 @@
 import Item from './itemCreator.js';
 import Project from './projectCreator.js';
+import { format, isToday, parse, startOfTomorrow } from 'date-fns';
 
 const newButton = document.querySelector('button#new-task');
 const newForm = document.querySelector('form#new-item-form');
@@ -10,6 +11,16 @@ const projList = [];
 
 let currentTab = 'Inbox'; // Default
 let itemList;
+
+const allItems = function() {
+    const all = [];
+    projList.forEach(project => {
+        project.itemList.forEach(item => {
+            all.push(item);
+        })
+    })
+    return all;
+}
 
 tabList.querySelectorAll('button').forEach(button => {
     button.addEventListener('click', () => {
@@ -22,7 +33,23 @@ tabList.querySelectorAll('button').forEach(button => {
     console.log(projList);
 });
 
+function parsed(date) {
+    return parse(date, 'MM/dd/yyyy', new Date());
+}
+
 const updateTab = function() {
+    const all = allItems();
+    all.forEach(item => {
+        projList.forEach(proj => {
+            if (!(proj.itemList.includes(item))) {
+                if ((proj.name === 'Inbox') || 
+                    ((proj.name === 'Today' && isToday(parsed(item.dueDate)))) ||
+                    ((proj.name === 'Upcoming' && parsed(item.dueDate) >= startOfTomorrow()))) {
+                        proj.itemList.push(item);
+                }
+            }
+        })
+    })
     return itemList = projList.find((element) => element.name === currentTab).itemList;
 }
 
@@ -54,7 +81,9 @@ submitButton.addEventListener('click', (e) => {
             currentTab = 'Inbox';
         }
         updateTab();
-        itemList.push(new Item(title.value, desc.value, dueDate.value, priority.value, false));
+        itemList.push(new Item(title.value, desc.value, 
+            format(new Date(dueDate.value), 'P'), 
+            priority.value, false));
         updatePage();
         newForm.reset();
     } else {
