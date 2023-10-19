@@ -27,15 +27,15 @@ tabList.querySelectorAll('button').forEach(button => {
         currentTab = button.id;
         updateTab();
         updatePage();
-        console.log(currentTab)
     })
     projList.push(new Project(`${button.id}`));
-    console.log(projList);
 });
 
 function parsed(date) {
     return parse(date, 'MM/dd/yyyy', new Date());
 }
+
+console.log(new Date('2023-10-19'))
 
 const updateTab = function() {
     const all = allItems();
@@ -81,9 +81,9 @@ submitButton.addEventListener('click', (e) => {
             currentTab = 'Inbox';
         }
         updateTab();
-        itemList.push(new Item(title.value, desc.value, 
-            format(new Date(dueDate.value), 'P'), 
-            priority.value, false));
+        itemList.push(new Item(
+            title.value, desc.value, format(new Date(dueDate.value.replace('-', '/')), 'P'), priority.value, false
+            ));
         updatePage();
         newForm.reset();
     } else {
@@ -107,5 +107,4 @@ newProject.addEventListener('click', () => {
     } else {
         alert('Name is already in use. Please try again')
     }
-    console.log(projList);
 })
