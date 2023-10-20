@@ -5,6 +5,8 @@ import { format, isToday, parse, startOfTomorrow } from 'date-fns';
 const newButton = document.querySelector('button#new-task');
 const newForm = document.querySelector('form#new-item-form');
 const taskContainer = document.querySelector('div.content');
+const taskList = document.querySelector('div.task-list');
+const tabTitle = document.querySelector('div.tab-title');
 const tabList = document.querySelector('div.tab-list');
 
 const projList = [];
@@ -35,11 +37,9 @@ function parsed(date) {
     return parse(date, 'MM/dd/yyyy', new Date());
 }
 
-console.log(new Date('2023-10-19'))
-
 const updateTab = function() {
-    const all = allItems();
-    all.forEach(item => {
+    tabTitle.textContent = `${currentTab}`;
+    allItems().forEach(item => {
         projList.forEach(proj => {
             if (!(proj.itemList.includes(item))) {
                 if ((proj.name === 'Inbox') || 
@@ -58,7 +58,7 @@ newButton.addEventListener('click', () => {
 })
 
 const updatePage = function() {
-    taskContainer.innerHTML = '';
+    taskList.innerHTML = '';
     itemList.forEach(item => {
         const itemDiv = document.createElement('div')
         itemDiv.classList.add('task');
@@ -68,14 +68,16 @@ const updatePage = function() {
             dataDiv.textContent = `${key}: ${value}`;
             itemDiv.appendChild(dataDiv);
         }
-        taskContainer.appendChild(itemDiv);
+        taskList.appendChild(itemDiv);
     });
 }
 
 const submitButton = document.querySelector('button#submit')
 submitButton.addEventListener('click', (e) => {
     e.preventDefault();
-    if (newForm.checkValidity()) {
+    if (dueDate.value.length > 10) {
+        alert("Please enter a 4-digit year (maximum: 9999).");
+    } else if (newForm.checkValidity()) {
         newForm.style.display = '';
         if (currentTab == 'Today' || currentTab == 'Upcoming') {
             currentTab = 'Inbox';
@@ -87,7 +89,7 @@ submitButton.addEventListener('click', (e) => {
         updatePage();
         newForm.reset();
     } else {
-        alert('Please fill all of the fields');
+        alert('Please fill all of the fields.')
     }
 })
 
@@ -97,6 +99,9 @@ newProject.addEventListener('click', () => {
     const projName = prompt('What project name?');
     if ( !(( projList.map((a) => a.name)).includes(projName)) && (projName.length >= 1)) {
         projList.push(new Project(projName));
+        currentTab = projName;
+        updateTab();
+        updatePage();
         const newProj = document.createElement('button');
         newProj.textContent = projName;
         newProj.id = projName;
@@ -108,3 +113,6 @@ newProject.addEventListener('click', () => {
         alert('Name is already in use. Please try again')
     }
 })
+
+updateTab();
+updatePage();
