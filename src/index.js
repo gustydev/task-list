@@ -83,10 +83,16 @@ const updatePage = function() {
                 dataDiv.classList.add(`task-${key}`);
                 dataDiv.textContent = `${value}`;
                 if (key == 'priority') {
+                    dataDiv.addEventListener('click', () => {
+                        if (value == 'low') {item.priority = 'mid';}
+                        else if (value == 'mid') {item.priority = 'high';}
+                        else {item.priority = 'low';}
+                        updatePage();
+                    })
                     if (value == 'low') {
                         dataDiv.style.backgroundColor = 'green';
                     } else if (value == 'mid') {
-                        dataDiv.style.backgroundColor = 'yellow'
+                        dataDiv.style.backgroundColor = 'yellow';
                         dataDiv.style.color = 'black'
                     } else {
                         dataDiv.style.backgroundColor = 'red';
@@ -141,7 +147,7 @@ newProject.addEventListener('click', () => {
 })
 
 updateTab();
-itemList.push(new Item ('Lorem ipsum dolor sit amet, consectetuer adipiscin', 'That is the title character limit.', '10/09/2023', 'low', false));
+itemList.push(new Item ('Lorem ipsum dolor sit amet, consectetuer adipiscin', 'That is the title character limit.', '10/09/2024', 'low', false));
 itemList.push(new Item ('And this is the description character limit', 'Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean!!', '10/09/2023', 'mid', false));
 itemList.push(new Item ('Finish the todo list project', 'Design the rest of the website, and write a reasonably long description for this task.', '10/23/2023', 'high', false))
 updatePage();
