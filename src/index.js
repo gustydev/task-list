@@ -58,15 +58,31 @@ newButton.addEventListener('click', () => {
 })
 
 const updatePage = function() {
+    updateTab();
     taskList.innerHTML = '';
     itemList.forEach(item => {
         const itemDiv = document.createElement('div')
         itemDiv.classList.add('task');
         for (const [key,value] of Object.entries(item)) {
-            const dataDiv = document.createElement('div');
-            dataDiv.classList.add(`task-${key}`);
-            dataDiv.textContent = `${key}: ${value}`;
-            itemDiv.appendChild(dataDiv);
+            if (key == 'checklist') {
+                const dataDiv = document.createElement('input');
+                dataDiv.type = 'checkbox';
+                dataDiv.addEventListener('click', () => {
+                    projList.forEach(proj => {
+                        if (proj.itemList.includes(item)) {
+                            const newList = proj.itemList.filter((a) => !(a === item));
+                            proj.itemList = newList;
+                        }
+                    })
+                    updatePage();
+                })
+                itemDiv.appendChild(dataDiv);
+            } else {
+                const dataDiv = document.createElement('div');
+                dataDiv.classList.add(`task-${key}`);
+                dataDiv.textContent = `${value}`;
+                itemDiv.appendChild(dataDiv);
+            }
         }
         taskList.appendChild(itemDiv);
     });
@@ -100,7 +116,6 @@ newProject.addEventListener('click', () => {
     if ( !(( projList.map((a) => a.name)).includes(projName)) && (projName.length >= 1)) {
         projList.push(new Project(projName));
         currentTab = projName;
-        updateTab();
         updatePage();
         const newProj = document.createElement('button');
         newProj.textContent = projName;
@@ -115,4 +130,7 @@ newProject.addEventListener('click', () => {
 })
 
 updateTab();
+itemList.push(new Item ('Lorem ipsum dolor sit amet, consectetuer adipiscin', 'That is the title character limit.', '10/09/2023', 'low', false));
+itemList.push(new Item ('And this is the description character limit', 'Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean!!', '10/09/2023', 'mid', false));
+itemList.push(new Item ('Finish the todo list project', 'Design the rest of the website, and write a reasonably long description for this task.', '10/23/2023', 'high', false))
 updatePage();
