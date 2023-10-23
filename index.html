@@ -32,11 +32,11 @@
         <div class="form-title">New item</div>
         <div class="form-field">
             <label for="title">Task name:</label>
-            <input required id="title" name="title" type="text">
+            <input required id="title" name="title" type="text" maxlength="50">
         </div>
         <div class="form-field">
             <label for="desc">Description:</label>
-            <input required id="desc" name="desc" type="text">
+            <input id="desc" name="desc" type="text" maxlength="100">
         </div>
         <div class="form-field">
             <label for="priority">Priority:</label>
@@ -44,7 +44,6 @@
                 <option value="low">Low</option>
                 <option value="mid">Medium</option>
                 <option value="high">High</option>
-                <option value="max">Maximum</option>
             </select>
         </div>
         <div class="form-field">
