@@ -67,6 +67,7 @@ const updatePage = function() {
             if (key == 'checklist') {
                 const dataDiv = document.createElement('input');
                 dataDiv.type = 'checkbox';
+                dataDiv.classList.add('task-checklist');
                 dataDiv.addEventListener('click', () => {
                     projList.forEach(proj => {
                         if (proj.itemList.includes(item)) {
@@ -81,6 +82,16 @@ const updatePage = function() {
                 const dataDiv = document.createElement('div');
                 dataDiv.classList.add(`task-${key}`);
                 dataDiv.textContent = `${value}`;
+                if (key == 'priority') {
+                    if (value == 'low') {
+                        dataDiv.style.backgroundColor = 'green';
+                    } else if (value == 'mid') {
+                        dataDiv.style.backgroundColor = 'yellow'
+                        dataDiv.style.color = 'black'
+                    } else {
+                        dataDiv.style.backgroundColor = 'red';
+                    }
+                }
                 itemDiv.appendChild(dataDiv);
             }
         }
