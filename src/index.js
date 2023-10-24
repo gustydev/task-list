@@ -25,12 +25,13 @@ const allItems = function() {
 }
 
 tabList.querySelectorAll('button').forEach(button => {
-    button.addEventListener('click', () => {
-        currentTab = button.id;
-        updateTab();
-        updatePage();
-    })
-    projList.push(new Project(`${button.id}`));
+    if (!(button.id == 'new-project')) {
+        button.addEventListener('click', () => {
+            currentTab = button.id;
+            updatePage();
+        })
+        projList.push(new Project(`${button.id}`));
+    }
 });
 
 function parsed(date) {
@@ -50,16 +51,24 @@ const updateTab = function() {
             }
         })
     })
-    return itemList = projList.find((element) => element.name === currentTab).itemList;
+    itemList = projList.find((element) => element.name === currentTab).itemList;
+    tabList.querySelectorAll('button').forEach(button => {
+        if (!(button.id == 'new-project')) {
+            const tabLength = projList.find((proj) => proj.name == button.id).itemList.length;
+            if (button.id == currentTab) {
+                button.textContent = `> ${button.id} [${tabLength}]`;
+            } else {
+                button.textContent = `${button.id} [${tabLength}]`;
+            }
+        }
+    })
 }
 
 newButton.addEventListener('click', () => {
     newForm.style.display = 'initial';
 })
 
-const updatePage = function() {
-    updateTab();
-    taskList.innerHTML = '';
+const addItems = function() {
     itemList.forEach(item => {
         const itemDiv = document.createElement('div')
         itemDiv.classList.add('task');
@@ -105,6 +114,12 @@ const updatePage = function() {
     });
 }
 
+const updatePage = function() {
+    updateTab();
+    taskList.innerHTML = '';
+    addItems();
+}
+
 const submitButton = document.querySelector('button#submit')
 submitButton.addEventListener('click', (e) => {
     e.preventDefault();
@@ -127,9 +142,8 @@ submitButton.addEventListener('click', (e) => {
 })
 
 const newProject = document.querySelector('button#new-project');
-const projectList = document.querySelector('div.project-list');
 newProject.addEventListener('click', () => {
-    const projName = prompt('What project name?');
+    let projName = prompt('Name your project:');
     if ( !(( projList.map((a) => a.name)).includes(projName)) && (projName.length >= 1)) {
         projList.push(new Project(projName));
         currentTab = projName;
@@ -137,8 +151,9 @@ newProject.addEventListener('click', () => {
         const newProj = document.createElement('button');
         newProj.textContent = projName;
         newProj.id = projName;
-        newProj.addEventListener('click', () => {currentTab = projName; updateTab(); updatePage()});
-        projectList.appendChild(newProj);
+        newProj.addEventListener('click', () => {currentTab = projName; updatePage()});
+        tabList.insertBefore(newProj, newProject);
+        updatePage();
     } else if (projName.length == 0) {
         alert('Projects must have a name. Please try again.')
     } else {
