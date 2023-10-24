@@ -129,11 +129,16 @@ const addItems = function() {
                         dataDiv.appendChild(textInput);
                         dataDiv.appendChild(confirmButton)
                     })
-                    dataDiv.appendChild(editButton);
+                    dataDiv.addEventListener('mouseover', () => {
+                        if (!(dataDiv.innerHTML.includes('input'))) {dataDiv.appendChild(editButton)}
+                    })
+                    dataDiv.addEventListener('mouseleave', () => {
+                        if (!(dataDiv.innerHTML.includes('input'))) {dataDiv.removeChild(editButton)}
+                    })
                 } else if (key == 'dueDate') {
                     const dateInput = document.createElement('input');
                     const confirmButton = document.createElement('button');
-                    confirmButton.textContent = 'V';
+                    confirmButton.textContent = 'Submit';
                     confirmButton.classList.add('confirm-button');
                     confirmButton.addEventListener('click', () => {
                         item.dueDate = format(new Date(dateInput.value.replace('-', '/')), 'P');

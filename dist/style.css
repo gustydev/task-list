@@ -149,5 +149,5 @@ body {
 
 .task-dueDate:hover {
     text-decoration: underline;
-    cursor: crosshair;
+    cursor:text;
 }
