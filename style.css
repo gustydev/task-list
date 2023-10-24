@@ -8,27 +8,31 @@ body {
 
 .main {
     display: grid;
-    grid-template-columns: 1fr 5fr;
+    grid-template-columns: 1fr 90%;
     grid-template-rows: 1fr 90%;
     height: 100vh;
 }
 
-.title {
+.top {
     font-family: 'Playpen Sans', cursive;
     grid-column: 1 / -1;
-    font-size: 36px;
-    font-weight: bold;
     background-color:#115E59;
-    color: #EEEEEE;
     display: flex;
     align-items: center;
-    justify-content: center;
+}
+
+.title {
+    margin-left: 1%;
+    font-size: 36px;
+    font-weight: bold;
+    color: #EEEEEE;
 }
 
 .sidebar {
     background-color: #76be94;
     display: flex;
     flex-direction: column;
+    justify-content: space-between;
     gap: 16px;
 }
 
@@ -52,11 +56,23 @@ body {
     display: flex;
     flex-direction: column;
     gap: 8px;
+    align-items: start;
 }
 
-.new-buttons {
+.tab-text {
+    font-weight: bold;
+    margin-top: 5%;
+    align-self: center;
+    font-size: 120%;
+}
+
+.new-button {
     display: flex;
-    justify-content: space-around;
+    justify-content: center;
+}
+
+.new-button > button {
+    margin-top: 5%;
 }
 
 .tab-list > button {
@@ -123,4 +139,8 @@ body {
 .task-checklist {
     grid-area: check;
     align-self: center;
+}
+
+#new-project:hover {
+    color: red;
 }
