@@ -4,7 +4,6 @@ import { format, isToday, parse, startOfTomorrow } from 'date-fns';
 
 const newButton = document.querySelector('button#new-task');
 const newForm = document.querySelector('form#new-item-form');
-const taskContainer = document.querySelector('div.content');
 const taskList = document.querySelector('div.task-list');
 const tabTitle = document.querySelector('div.tab-title');
 const tabList = document.querySelector('div.tab-list');
@@ -93,9 +92,9 @@ const addItems = function() {
                 dataDiv.textContent = `${value}`;
                 if (key == 'priority') {
                     dataDiv.addEventListener('click', () => {
-                        if (value == 'low') {item.priority = 'mid';}
-                        else if (value == 'mid') {item.priority = 'high';}
-                        else {item.priority = 'low';}
+                        if (item.priority == 'low') {item.priority = 'mid'}
+                        else if (item.priority == 'mid') {item.priority = 'high'}
+                        else {item.priority = 'low'}
                         updatePage();
                     })
                     if (value == 'low') {
@@ -106,6 +105,47 @@ const addItems = function() {
                     } else {
                         dataDiv.style.backgroundColor = 'red';
                     }
+                } else if (key == 'title' || key == 'desc') {
+                    const editButton = document.createElement('button');
+                    editButton.classList.add('edit-button');
+                    editButton.textContent = 'E';
+                    editButton.addEventListener('click', () => {
+                        const textInput = document.createElement('input');
+                        const confirmButton = document.createElement('button');
+                        textInput.type = 'text';
+                        textInput.value = `${value}`;
+                        textInput.placeholder = `${key}`;
+                        textInput.classList.add(`task-${key}`);
+                        if (key == 'title') {textInput.maxLength = '50'} 
+                        else {textInput.maxLength = '100'}
+                        confirmButton.textContent = 'V';
+                        confirmButton.classList.add('confirm-button');
+                        confirmButton.addEventListener('click', () => {
+                            if (key == 'title') {item.title = textInput.value}
+                            else {item.desc = textInput.value}
+                            updatePage();
+                        })
+                        dataDiv.textContent = '';
+                        dataDiv.appendChild(textInput);
+                        dataDiv.appendChild(confirmButton)
+                    })
+                    dataDiv.appendChild(editButton);
+                } else if (key == 'dueDate') {
+                    const dateInput = document.createElement('input');
+                    const confirmButton = document.createElement('button');
+                    confirmButton.textContent = 'V';
+                    confirmButton.classList.add('confirm-button');
+                    confirmButton.addEventListener('click', () => {
+                        item.dueDate = format(new Date(dateInput.value.replace('-', '/')), 'P');
+                        updatePage();
+                    })
+                    dateInput.type = 'date';
+                    dateInput.value = format(parsed(item.dueDate), 'yyyy-MM-dd')
+                    dataDiv.addEventListener('click', () => {
+                        dataDiv.textContent = '';
+                        dataDiv.appendChild(dateInput);
+                        dataDiv.appendChild(confirmButton);
+                    }, {once: true})
                 }
                 itemDiv.appendChild(dataDiv);
             }
@@ -144,10 +184,10 @@ submitButton.addEventListener('click', (e) => {
 const newProject = document.querySelector('button#new-project');
 newProject.addEventListener('click', () => {
     let projName = prompt('Name your project:');
-    if ( !(( projList.map((a) => a.name)).includes(projName)) && (projName.length >= 1)) {
+    if ( !(( projList.map((a) => a.name)).includes(projName)) && projName.length !== 0) {
         projList.push(new Project(projName));
         currentTab = projName;
-        updatePage();
+        updateTab();
         const newProj = document.createElement('button');
         newProj.textContent = projName;
         newProj.id = projName;
@@ -157,7 +197,7 @@ newProject.addEventListener('click', () => {
     } else if (projName.length == 0) {
         alert('Projects must have a name. Please try again.')
     } else {
-        alert('Name is already in use. Please try again')
+        alert('Name is already in use. Please try again.')
     }
 })
 

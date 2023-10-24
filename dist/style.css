@@ -8,9 +8,9 @@ body {
 
 .main {
     display: grid;
-    grid-template-columns: 1fr 90%;
-    grid-template-rows: 1fr 90%;
-    height: 100vh;
+    grid-template-columns: 1fr 7fr;
+    grid-template-rows: 1fr 9fr;
+    min-height: 100vh;
 }
 
 .top {
@@ -34,11 +34,19 @@ body {
     flex-direction: column;
     justify-content: space-between;
     gap: 16px;
+    padding: 16px;
 }
 
 .content {
     background-color: #e2e2e2;
     padding: 16px;
+    min-width: 75%;
+    justify-self: center;
+}
+
+.upper {
+    display: flex;
+    justify-content: space-between;
 }
 
 #new-item-form {
@@ -62,17 +70,7 @@ body {
 .tab-text {
     font-weight: bold;
     margin-top: 5%;
-    align-self: center;
     font-size: 120%;
-}
-
-.new-button {
-    display: flex;
-    justify-content: center;
-}
-
-.new-button > button {
-    margin-top: 5%;
 }
 
 .tab-list > button {
@@ -81,6 +79,10 @@ body {
     color: rgb(0, 0, 0);
     font-size: 16px;
     font-weight: bold;
+}
+
+.tab-list > button:hover {
+    color: white;
 }
 
 .tab-title {
@@ -143,4 +145,9 @@ body {
 
 #new-project:hover {
     color: red;
+}
+
+.task-dueDate:hover {
+    text-decoration: underline;
+    cursor: crosshair;
 }
