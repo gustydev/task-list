@@ -124,6 +124,9 @@ body {
 
 .task-dueDate {
     grid-area: date;
+    display: flex;
+    flex-direction: column;
+    position: relative;
 }
 
 .task-priority {
@@ -150,4 +153,30 @@ body {
 .task-dueDate:hover {
     text-decoration: underline;
     cursor:text;
+}
+
+.edit-button, .confirm-button {
+    border: 0;
+    padding: 0;
+}
+
+.edit-button > img, .confirm-button > img {
+    width: 16px;
+    height: 16px;
+    position: relative;
+    left: 5%;
+}
+
+.task-title > input, .task-desc > input {
+    border: 0;
+    background-color: rgb(219, 219, 219);
+    padding: 0;
+    font-size: inherit;
+    width: 80%; 
+}
+
+.task-dueDate > button {
+    align-self: end;
+    position: absolute;
+    top: 100%;
 }
