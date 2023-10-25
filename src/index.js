@@ -34,7 +34,11 @@ tabList.querySelectorAll('button').forEach(button => {
 });
 
 function parsed(date) {
-    return parse(date, 'MM/dd/yyyy', new Date());
+    return parse(date, 'PP', new Date());
+}
+
+function dateFormat(date) {
+    return format(parse(date, 'yyyy-MM-dd', new Date()), 'PP');
 }
 
 const updateTab = function() {
@@ -143,7 +147,7 @@ const addItems = function() {
                     confirmButton.innerHTML = "<img src='./images/check.png'>"
                     confirmButton.classList.add('confirm-button');
                     confirmButton.addEventListener('click', () => {
-                        item.dueDate = format(new Date(dateInput.value.replace('-', '/')), 'P');
+                        item.dueDate = dateFormat(dateInput.value);
                         updatePage();
                     })
                     dateInput.type = 'date';
@@ -179,7 +183,7 @@ submitButton.addEventListener('click', (e) => {
         }
         updateTab();
         itemList.push(new Item(
-            title.value, desc.value, format(new Date(dueDate.value.replace('-', '/')), 'P'), priority.value, false
+            title.value, desc.value, dateFormat(dueDate.value), priority.value, false
             ));
         updatePage();
         newForm.reset();
@@ -209,7 +213,7 @@ newProject.addEventListener('click', () => {
 })
 
 updateTab();
-itemList.push(new Item ('Lorem ipsum dolor sit amet, consectetuer adipiscin', 'That is the title character limit.', '10/09/2024', 'low', false));
-itemList.push(new Item ('And this is the description character limit', 'Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean!!', '10/09/2023', 'mid', false));
-itemList.push(new Item ('Finish the todo list project', 'Design the rest of the website, and write a reasonably long description for this task.', '10/23/2023', 'high', false))
+itemList.push(new Item ('Lorem ipsum dolor sit amet, consectetuer adipiscin', 'That is the title character limit.', dateFormat('2024-10-25'), 'low', false));
+itemList.push(new Item ('And this is the description character limit', 'Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean!!', dateFormat('2023-10-29'), 'mid', false));
+itemList.push(new Item ('Finish the todo list project', 'Design the rest of the website, and write a reasonably long description for this task.', dateFormat('2023-10-25'), 'high', false));
 updatePage();
