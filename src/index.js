@@ -108,7 +108,8 @@ const addItems = function() {
                 } else if (key == 'title' || key == 'desc') {
                     const editButton = document.createElement('button');
                     editButton.classList.add('edit-button');
-                    editButton.textContent = 'E';
+                    editButton.innerHTML = "<img src='./images/edit.png'>"
+                    editButton.style.visibility = 'hidden' // By default, hidden
                     editButton.addEventListener('click', () => {
                         const textInput = document.createElement('input');
                         const confirmButton = document.createElement('button');
@@ -118,7 +119,7 @@ const addItems = function() {
                         textInput.classList.add(`task-${key}`);
                         if (key == 'title') {textInput.maxLength = '50'} 
                         else {textInput.maxLength = '100'}
-                        confirmButton.textContent = 'V';
+                        confirmButton.innerHTML = "<img src='./images/check.png'>"
                         confirmButton.classList.add('confirm-button');
                         confirmButton.addEventListener('click', () => {
                             if (key == 'title') {item.title = textInput.value}
@@ -129,16 +130,17 @@ const addItems = function() {
                         dataDiv.appendChild(textInput);
                         dataDiv.appendChild(confirmButton)
                     })
+                    dataDiv.appendChild(editButton)
                     dataDiv.addEventListener('mouseover', () => {
-                        if (!(dataDiv.innerHTML.includes('input'))) {dataDiv.appendChild(editButton)}
+                        if (!(dataDiv.innerHTML.includes('input'))) {editButton.style.visibility = 'visible'}
                     })
                     dataDiv.addEventListener('mouseleave', () => {
-                        if (!(dataDiv.innerHTML.includes('input'))) {dataDiv.removeChild(editButton)}
+                        if (!(dataDiv.innerHTML.includes('input'))) {editButton.style.visibility = 'hidden'}
                     })
                 } else if (key == 'dueDate') {
                     const dateInput = document.createElement('input');
                     const confirmButton = document.createElement('button');
-                    confirmButton.textContent = 'Submit';
+                    confirmButton.innerHTML = "<img src='./images/check.png'>"
                     confirmButton.classList.add('confirm-button');
                     confirmButton.addEventListener('click', () => {
                         item.dueDate = format(new Date(dateInput.value.replace('-', '/')), 'P');
