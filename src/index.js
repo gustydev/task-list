@@ -1,6 +1,6 @@
 import Item from './itemCreator.js';
 import Project from './projectCreator.js';
-import { format, isToday, parse, startOfTomorrow } from 'date-fns';
+import { format, isToday, parse, startOfTomorrow, startOfToday } from 'date-fns';
 
 const newButton = document.querySelector('button#new-task');
 const newForm = document.querySelector('form#new-item-form');
@@ -117,19 +117,25 @@ const addItems = function() {
                     editButton.addEventListener('click', () => {
                         const textInput = document.createElement('input');
                         const confirmButton = document.createElement('button');
+                        function confirm() {
+                            if (key == 'title') {item.title = textInput.value}
+                            else {item.desc = textInput.value}
+                            updatePage();
+                        }
                         textInput.type = 'text';
                         textInput.value = `${value}`;
                         textInput.placeholder = `${key}`;
                         textInput.classList.add(`task-${key}`);
+                        textInput.addEventListener('keydown', (e) => {
+                            if (e.key == 'Enter') {
+                                confirm();
+                            }
+                        })
                         if (key == 'title') {textInput.maxLength = '50'} 
                         else {textInput.maxLength = '100'}
                         confirmButton.innerHTML = "<img src='./images/check.png'>"
                         confirmButton.classList.add('confirm-button');
-                        confirmButton.addEventListener('click', () => {
-                            if (key == 'title') {item.title = textInput.value}
-                            else {item.desc = textInput.value}
-                            updatePage();
-                        })
+                        confirmButton.addEventListener('click', confirm);
                         dataDiv.textContent = '';
                         dataDiv.appendChild(textInput);
                         dataDiv.appendChild(confirmButton)
@@ -144,14 +150,20 @@ const addItems = function() {
                 } else if (key == 'dueDate') {
                     const dateInput = document.createElement('input');
                     const confirmButton = document.createElement('button');
-                    confirmButton.innerHTML = "<img src='./images/check.png'>"
-                    confirmButton.classList.add('confirm-button');
-                    confirmButton.addEventListener('click', () => {
+                    function confirmDate() {
                         item.dueDate = dateFormat(dateInput.value);
                         updatePage();
-                    })
+                    }
+                    confirmButton.innerHTML = "<img src='./images/check.png'>"
+                    confirmButton.classList.add('confirm-button');
+                    confirmButton.addEventListener('click', confirmDate)
                     dateInput.type = 'date';
                     dateInput.value = format(parsed(item.dueDate), 'yyyy-MM-dd')
+                    dateInput.addEventListener('keydown', (e) => {
+                        if (e.key == 'Enter') {
+                            confirmDate();
+                        }
+                    })
                     dataDiv.addEventListener('click', () => {
                         dataDiv.textContent = '';
                         dataDiv.appendChild(dateInput);
@@ -213,7 +225,7 @@ newProject.addEventListener('click', () => {
 })
 
 updateTab();
-itemList.push(new Item ('Lorem ipsum dolor sit amet, consectetuer adipiscin', 'That is the title character limit.', dateFormat('2024-10-25'), 'low', false));
-itemList.push(new Item ('And this is the description character limit', 'Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean!!', dateFormat('2023-10-29'), 'mid', false));
-itemList.push(new Item ('Finish the todo list project', 'Design the rest of the website, and write a reasonably long description for this task.', dateFormat('2023-10-25'), 'high', false));
+itemList.push(new Item ('Test Task #1: Insert really long task title here..', 'That is the title character limit, and this task is due tomorrow.', format(startOfTomorrow(), 'PP'), 'low', false));
+itemList.push(new Item ('Test Task #2: Description character limit', 'Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean!!', dateFormat('2023-10-29'), 'mid', false));
+itemList.push(new Item ('Test Task #3', 'This one is due today, get going!', format(startOfToday(), 'PP'), 'high', false));
 updatePage();
