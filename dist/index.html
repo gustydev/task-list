@@ -31,12 +31,7 @@
     <form id="new-item-form">
         <div class="form-title">New item</div>
         <div class="form-field">
-            <label for="title">Task name:</label>
-            <input required id="title" name="title" type="text" maxlength="50">
-        </div>
-        <div class="form-field">
-            <label for="desc">Description:</label>
-            <input id="desc" name="desc" type="text" maxlength="100">
+            <input required id="title" name="title" type="text" maxlength="50" placeholder="Task name">
         </div>
         <div class="form-field">
             <label for="priority">Priority:</label>
@@ -50,7 +45,11 @@
             <label for="dueDate">Due date:</label>
             <input required id="dueDate" name="dueDate" type="date">
         </div>
+        <div class="form-field">
+            <textarea id="desc" name="desc" maxlength="100" placeholder="Description (optional)" rows="3"></textarea>
+        </div>
         <button type="submit" id="submit">Add</button>
+        <button id="cancel">Cancel</button>
     </form>
 </body>
 <script src="main.js"></script>

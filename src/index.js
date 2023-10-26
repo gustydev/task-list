@@ -68,7 +68,13 @@ const updateTab = function() {
 }
 
 newButton.addEventListener('click', () => {
-    newForm.style.display = 'initial';
+    newForm.style.display = 'grid';
+    document.addEventListener('keydown', (e) => {
+        if (e.key == 'Escape') {
+            newForm.style.display = 'none';
+            newForm.reset();
+        }
+    })
 })
 
 const addItems = function() {
@@ -189,7 +195,7 @@ submitButton.addEventListener('click', (e) => {
     if (dueDate.value.length > 10) {
         alert("Please enter a 4-digit year (maximum: 9999).");
     } else if (newForm.checkValidity()) {
-        newForm.style.display = '';
+        newForm.style.display = 'none';
         if (currentTab == 'Today' || currentTab == 'Upcoming') {
             currentTab = 'Inbox';
         }
@@ -200,8 +206,15 @@ submitButton.addEventListener('click', (e) => {
         updatePage();
         newForm.reset();
     } else {
-        alert('Please fill all of the fields.')
+        alert('Please fill the task name and date fields.')
     }
+})
+
+const cancelButton = document.querySelector('button#cancel');
+cancelButton.addEventListener('click', (e) => {
+    e.preventDefault();
+    newForm.style.display = 'none';
+    newForm.reset();
 })
 
 const newProject = document.querySelector('button#new-project');
