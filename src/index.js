@@ -8,16 +8,18 @@ const taskList = document.querySelector('div.task-list');
 const tabTitle = document.querySelector('div.tab-title');
 const tabList = document.querySelector('div.tab-list');
 
-const projList = [];
+let projList = [];
 
 let currentTab = 'Inbox'; // Default
 let itemList;
 
 const allItems = function() {
     const all = [];
-    projList.forEach(project => {
+    projList.forEach(project => { // Inbox, Today, Upcoming +
         project.itemList.forEach(item => {
-            all.push(item);
+            if (!(all.includes(item))) {
+                all.push(item);
+            }
         })
     })
     return all;
@@ -29,7 +31,7 @@ tabList.querySelectorAll('button').forEach(button => {
             currentTab = button.id;
             updatePage();
         })
-        projList.push(new Project(`${button.id}`));
+        projList.push(new Project(`${button.id}`, []));
     }
 });
 
@@ -45,7 +47,11 @@ const updateTab = function() {
     tabTitle.textContent = `${currentTab}`;
     allItems().forEach(item => {
         projList.forEach(proj => {
-            if (!(proj.itemList.includes(item))) {
+            const listMap = proj.itemList.map(a => [a.title, a.desc, a.dueDate, a.priority]);
+            const itemArr = [item.title, item.desc, item.dueDate, item.priority];
+            if (!(JSON.stringify(listMap).includes(JSON.stringify(itemArr)))) {
+                // Because arrays act stupid when local storage is involved, this was needed
+                // Before, a simple proj.itemList.includes(item) was enough
                 if ((proj.name === 'Inbox') || 
                     ((proj.name === 'Today' && isToday(parsed(item.dueDate)))) ||
                     ((proj.name === 'Upcoming' && parsed(item.dueDate) >= startOfTomorrow()))) {
@@ -55,13 +61,25 @@ const updateTab = function() {
         })
     })
     itemList = projList.find((element) => element.name === currentTab).itemList;
+    projList.forEach(proj => {
+        if (proj.name !== 'Inbox' && proj.name !== 'Today' && proj.name !== 'Upcoming') {
+            if (!(tabList.querySelector(`button#${proj.name.replaceAll(' ', '-')}`))) {
+                console.log('bleep')
+                const newProj = document.createElement('button');
+                newProj.id = proj.name.replaceAll(' ', '-');
+                newProj.textContent = proj.name;
+                newProj.addEventListener('click', () => { currentTab = newProj.id.replaceAll('-', ' '); updatePage()})
+                tabList.insertBefore(newProj, newProject);
+            }
+        }
+    })
     tabList.querySelectorAll('button').forEach(button => {
         if (!(button.id == 'new-project')) {
-            const tabLength = projList.find((proj) => proj.name == button.id).itemList.length;
-            if (button.id == currentTab) {
-                button.textContent = `> ${button.id} [${tabLength}]`;
+            const tabLength = projList.find((proj) => proj.name == button.id.replaceAll('-', ' ')).itemList.length;
+            if (button.id.replaceAll('-', ' ') == currentTab) {
+                button.textContent = `> ${button.id.replaceAll('-', ' ')} [${tabLength}]`;
             } else {
-                button.textContent = `${button.id} [${tabLength}]`;
+                button.textContent = `${button.id.replaceAll('-', ' ')} [${tabLength}]`;
             }
         }
     })
@@ -89,8 +107,7 @@ const addItems = function() {
                 dataDiv.addEventListener('click', () => {
                     projList.forEach(proj => {
                         if (proj.itemList.includes(item)) {
-                            const newList = proj.itemList.filter((a) => !(a === item));
-                            proj.itemList = newList;
+                            proj.itemList = proj.itemList.filter(a => a !== item);
                         }
                     })
                     updatePage();
@@ -183,12 +200,6 @@ const addItems = function() {
     });
 }
 
-const updatePage = function() {
-    updateTab();
-    taskList.innerHTML = '';
-    addItems();
-}
-
 const submitButton = document.querySelector('button#submit')
 submitButton.addEventListener('click', (e) => {
     e.preventDefault();
@@ -201,7 +212,7 @@ submitButton.addEventListener('click', (e) => {
         }
         updateTab();
         itemList.push(new Item(
-            title.value, desc.value, dateFormat(dueDate.value), priority.value, false
+            title.value, desc.value, dateFormat(dueDate.value), priority.value, false,
             ));
         updatePage();
         newForm.reset();
@@ -220,15 +231,9 @@ cancelButton.addEventListener('click', (e) => {
 const newProject = document.querySelector('button#new-project');
 newProject.addEventListener('click', () => {
     let projName = prompt('Name your project:');
-    if ( !(( projList.map((a) => a.name)).includes(projName)) && projName.length !== 0) {
+    if ( !(( projList.map((a) => a.name)).includes(projName)) && projName.length !== 0 && projName != 'new-project' && projName != "new project") {
         projList.push(new Project(projName));
         currentTab = projName;
-        updateTab();
-        const newProj = document.createElement('button');
-        newProj.textContent = projName;
-        newProj.id = projName;
-        newProj.addEventListener('click', () => {currentTab = projName; updatePage()});
-        tabList.insertBefore(newProj, newProject);
         updatePage();
     } else if (projName.length == 0) {
         alert('Projects must have a name. Please try again.')
@@ -237,8 +242,20 @@ newProject.addEventListener('click', () => {
     }
 })
 
-updateTab();
-itemList.push(new Item ('Test Task #1: Insert really long task title here..', 'That is the title character limit, and this task is due tomorrow.', format(startOfTomorrow(), 'PP'), 'low', false));
-itemList.push(new Item ('Test Task #2: Description character limit', 'Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean!!', dateFormat('2023-10-29'), 'mid', false));
-itemList.push(new Item ('Test Task #3', 'This one is due today, get going!', format(startOfToday(), 'PP'), 'high', false));
-updatePage();
+const updatePage = function() {
+    updateTab();
+    taskList.innerHTML = '';
+    addItems();
+    localStorage.setItem("projects", JSON.stringify(projList)); // Store the new project list in local
+}
+
+if (localStorage.getItem('projects') != null) {
+    projList = [];
+    JSON.parse(localStorage.getItem("projects")).forEach(a => {
+        projList.push(new Project(a.name));
+    })
+    for (let i = 0; i < projList.length; i++) {
+        projList[i].itemList = JSON.parse(localStorage.getItem("projects"))[i].itemList;
+    }
+    updatePage();
+}

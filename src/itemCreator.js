@@ -6,13 +6,6 @@ class Item {
         this.priority = priority;
         this.checklist = checklist;
     }
-    check() {
-        if (this.checklist === false) {
-            this.checklist = true;
-        } else {
-            this.checklist = false;
-        }
-    }
 }
 
 export default Item;
