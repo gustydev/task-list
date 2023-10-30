@@ -92,9 +92,15 @@ body {
 }
 
 .upper {
-    display: flex;
-    justify-content: space-between;
+    display: grid;
+    grid-template-columns: 8fr 1fr 1fr;
+    gap: 16px;
 }
+
+.upper > button {
+    width: 100%;
+}
+
 
 #new-item-form {
     display: none; /* hidden by default */

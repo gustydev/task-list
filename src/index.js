@@ -7,6 +7,7 @@ const newForm = document.querySelector('form#new-item-form');
 const taskList = document.querySelector('div.task-list');
 const tabTitle = document.querySelector('div.tab-title');
 const tabList = document.querySelector('div.tab-list');
+const upperPart = document.querySelector('div.upper');
 
 let projList = [];
 
@@ -61,10 +62,34 @@ const updateTab = function() {
         })
     })
     itemList = projList.find((element) => element.name === currentTab).itemList;
+    if (upperPart.querySelector('button#project-delete')) {
+        upperPart.removeChild(document.getElementById('project-delete')) // Preventing duplicates
+    }
+    if (currentTab != 'Inbox' && currentTab != 'Today' && currentTab != 'Upcoming') {
+        const currentProj = projList.find((proj) => proj.name == currentTab);
+        const deleteProj = document.createElement('button');
+            deleteProj.textContent = 'Delete project';
+            deleteProj.id = 'project-delete'
+            deleteProj.addEventListener('click', () => {
+                let output = confirm(`Are you sure you want to delete the ${currentProj.name} project? This cannot be undone!`)
+                if (output) {
+                    projList = projList.filter(a => a.name != currentProj.name)
+                    currentProj.itemList.forEach(item => {
+                        projList.forEach(proj => {
+                            if (proj.itemList.includes(item)) {
+                                proj.itemList = proj.itemList.filter(a => a !== item);
+                            }
+                    })})
+                    tabList.removeChild(document.getElementById(`${currentProj.name.replace(' ', '-')}`))
+                    currentTab = 'Inbox';
+                    updatePage();
+                }
+            })
+            upperPart.insertBefore(deleteProj, newButton)
+    }
     projList.forEach(proj => {
         if (proj.name !== 'Inbox' && proj.name !== 'Today' && proj.name !== 'Upcoming') {
             if (!(tabList.querySelector(`button#${proj.name.replaceAll(' ', '-')}`))) {
-                console.log('bleep')
                 const newProj = document.createElement('button');
                 newProj.id = proj.name.replaceAll(' ', '-');
                 newProj.textContent = proj.name;
@@ -259,3 +284,7 @@ if (localStorage.getItem('projects') != null) {
     }
     updatePage();
 }
+
+// Bugs to fix
+// 1. I don't know how to replicate it, but sometimes items still duplicate when editing properties
+// Project is still far from how I want it, almost 3 weeks later. Insane.
