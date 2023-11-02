@@ -48,9 +48,7 @@ function dateFormat(date) {
 
 const updateTab = function() {
     tabTitle.textContent = `${currentTab}`;
-    // console.log(JSON.parse(JSON.stringify(projList)))
     const all = allItems();
-    // console.log(all);
     projList.forEach(proj => {
         all.forEach(item => {
             const listMap = proj.items.map(a => [a.title, a.desc, a.dueDate, a.priority, a.checklist]);
@@ -74,6 +72,7 @@ const updateTab = function() {
             deleteProj.textContent = 'Delete project';
             deleteProj.id = 'project-delete'
             deleteProj.addEventListener('click', () => {
+                const current_proj_id = currentProj.name.replaceAll(' ', '-');
                 let output = confirm(`Are you sure you want to delete the ${currentProj.name} project? This cannot be undone!`)
                 if (output) {
                     projList = projList.filter(a => a.name != currentProj.name)
@@ -83,7 +82,7 @@ const updateTab = function() {
                                 proj.remove(item);
                             }
                     })})
-                    tabList.removeChild(document.getElementById(`${currentProj.name.replace(' ', '-')}`))
+                    tabList.removeChild(document.getElementById(`${current_proj_id}`))
                     currentTab = 'Inbox';
                     updatePage();
                 }
@@ -259,14 +258,16 @@ cancelButton.addEventListener('click', (e) => {
 const newProject = document.querySelector('button#new-project');
 newProject.addEventListener('click', () => {
     let projName = prompt('Name your project:');
-    if ( !(( projList.map((a) => a.name)).includes(projName)) && projName.length !== 0 && projName != 'new-project' && projName != "new project") {
+    if ( !(( projList.map((a) => a.name)).includes(projName)) && projName.length !== 0 && projName != 'new-project' && projName != "new project" && isNaN(projName[0])) {
         projList.push(new Project(projName, []));
         currentTab = projName;
         updatePage();
     } else if (projName.length == 0) {
         alert('Projects must have a name. Please try again.')
+    } else if (!isNaN(projName[0])) {
+        alert('Project name cannot start with a number. Please try again.')
     } else {
-        alert('Name is already in use. Please try again.')
+        alert('Name is already in use or invalid. Please try again.')
     }
 })
 
@@ -302,10 +303,3 @@ if (localStorage.getItem('projects') != null) {
 } else {
     updatePage();
 }
-
-// Bugs to fix
-// 1. Items from projects duplicate when editing properties
-// 2. Deleting items doesn't work unless you press the button a billion times
-// Issue is in local storage! Website works fine until you refresh the page
-// 3. Minor bug: can't name project starting with number. 
-// Simple fix: prohibit adding number as first character. Not doing it now for obvious reasons
