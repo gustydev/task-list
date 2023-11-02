@@ -1,9 +1,19 @@
 import Item from './itemCreator.js';
 
 class Project {
-    constructor(name) {
+    constructor(name, items) {
         this.name = name;
-        this.itemList = [];
+        this.items = items;
+    }
+    add(item) {
+        this.items.push(item);
+    }
+    remove(item) {
+        this.items = this.items.filter(a => a != item);
+        // const index = this.itemList.indexOf(item);
+        // if (index > -1) {
+        //     this.itemList.splice(index, 1);
+        // }
     }
 }
 

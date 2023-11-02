@@ -16,9 +16,9 @@ let itemList;
 
 const allItems = function() {
     const all = [];
-    projList.forEach(project => { // Inbox, Today, Upcoming +
-        project.itemList.forEach(item => {
-            if (!(all.includes(item))) {
+    projList.forEach(project => {
+        project.items.forEach(item => {
+            if (!(JSON.stringify(all).includes(JSON.stringify(item)))) {
                 all.push(item);
             }
         })
@@ -32,7 +32,9 @@ tabList.querySelectorAll('button').forEach(button => {
             currentTab = button.id;
             updatePage();
         })
-        projList.push(new Project(`${button.id}`, []));
+        if (projList.length < 3) {
+            projList.push(new Project(`${button.id}`, [])); 
+        }
     }
 });
 
@@ -46,22 +48,23 @@ function dateFormat(date) {
 
 const updateTab = function() {
     tabTitle.textContent = `${currentTab}`;
-    allItems().forEach(item => {
-        projList.forEach(proj => {
-            const listMap = proj.itemList.map(a => [a.title, a.desc, a.dueDate, a.priority]);
-            const itemArr = [item.title, item.desc, item.dueDate, item.priority];
+    // console.log(JSON.parse(JSON.stringify(projList)))
+    const all = allItems();
+    // console.log(all);
+    projList.forEach(proj => {
+        all.forEach(item => {
+            const listMap = proj.items.map(a => [a.title, a.desc, a.dueDate, a.priority, a.checklist]);
+            const itemArr = [item.title, item.desc, item.dueDate, item.priority, item.checklist];
             if (!(JSON.stringify(listMap).includes(JSON.stringify(itemArr)))) {
-                // Because arrays act stupid when local storage is involved, this was needed
-                // Before, a simple proj.itemList.includes(item) was enough
                 if ((proj.name === 'Inbox') || 
                     ((proj.name === 'Today' && isToday(parsed(item.dueDate)))) ||
                     ((proj.name === 'Upcoming' && parsed(item.dueDate) >= startOfTomorrow()))) {
-                        proj.itemList.push(item);
+                        proj.add(item);
                 }
             }
         })
     })
-    itemList = projList.find((element) => element.name === currentTab).itemList;
+    itemList = projList.find((element) => element.name === currentTab).items;
     if (upperPart.querySelector('button#project-delete')) {
         upperPart.removeChild(document.getElementById('project-delete')) // Preventing duplicates
     }
@@ -74,10 +77,10 @@ const updateTab = function() {
                 let output = confirm(`Are you sure you want to delete the ${currentProj.name} project? This cannot be undone!`)
                 if (output) {
                     projList = projList.filter(a => a.name != currentProj.name)
-                    currentProj.itemList.forEach(item => {
+                    currentProj.items.forEach(item => {
                         projList.forEach(proj => {
-                            if (proj.itemList.includes(item)) {
-                                proj.itemList = proj.itemList.filter(a => a !== item);
+                            if (proj.items.includes(item)) {
+                                proj.remove(item);
                             }
                     })})
                     tabList.removeChild(document.getElementById(`${currentProj.name.replace(' ', '-')}`))
@@ -100,7 +103,7 @@ const updateTab = function() {
     })
     tabList.querySelectorAll('button').forEach(button => {
         if (!(button.id == 'new-project')) {
-            const tabLength = projList.find((proj) => proj.name == button.id.replaceAll('-', ' ')).itemList.length;
+            const tabLength = projList.find((proj) => proj.name == button.id.replaceAll('-', ' ')).items.length;
             if (button.id.replaceAll('-', ' ') == currentTab) {
                 button.textContent = `> ${button.id.replaceAll('-', ' ')} [${tabLength}]`;
             } else {
@@ -131,8 +134,8 @@ const addItems = function() {
                 dataDiv.classList.add('task-checklist');
                 dataDiv.addEventListener('click', () => {
                     projList.forEach(proj => {
-                        if (proj.itemList.includes(item)) {
-                            proj.itemList = proj.itemList.filter(a => a !== item);
+                        if (proj.items.includes(item)) {
+                            proj.remove(item);
                         }
                     })
                     updatePage();
@@ -257,7 +260,7 @@ const newProject = document.querySelector('button#new-project');
 newProject.addEventListener('click', () => {
     let projName = prompt('Name your project:');
     if ( !(( projList.map((a) => a.name)).includes(projName)) && projName.length !== 0 && projName != 'new-project' && projName != "new project") {
-        projList.push(new Project(projName));
+        projList.push(new Project(projName, []));
         currentTab = projName;
         updatePage();
     } else if (projName.length == 0) {
@@ -276,15 +279,33 @@ const updatePage = function() {
 
 if (localStorage.getItem('projects') != null) {
     projList = [];
-    JSON.parse(localStorage.getItem("projects")).forEach(a => {
-        projList.push(new Project(a.name));
+    const storedAll = [];
+    JSON.parse(localStorage.getItem("projects")).forEach(p => {
+        p.items.forEach(i => {
+            const newItem = new Item(i.title, i.desc, i.dueDate, i.priority, i.checklist);
+            if (!(JSON.stringify(storedAll).includes(JSON.stringify(newItem)))) {
+                storedAll.push(newItem);
+            }
+        })
+        projList.push(new Project(p.name, []));
     })
-    for (let i = 0; i < projList.length; i++) {
-        projList[i].itemList = JSON.parse(localStorage.getItem("projects"))[i].itemList;
-    }
+    projList.forEach(proj => {
+        storedAll.forEach(item => {
+            console.log()
+            if (JSON.stringify(JSON.parse(localStorage.getItem('projects')).find((p) => p.name === proj.name).items).includes(JSON.stringify(item))) {
+                // jesus christ 
+                proj.add(item)
+            }
+        })
+    })
+    updatePage();
+} else {
     updatePage();
 }
 
 // Bugs to fix
-// 1. I don't know how to replicate it, but sometimes items still duplicate when editing properties
-// Project is still far from how I want it, almost 3 weeks later. Insane.
+// 1. Items from projects duplicate when editing properties
+// 2. Deleting items doesn't work unless you press the button a billion times
+// Issue is in local storage! Website works fine until you refresh the page
+// 3. Minor bug: can't name project starting with number. 
+// Simple fix: prohibit adding number as first character. Not doing it now for obvious reasons
