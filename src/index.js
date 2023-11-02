@@ -50,6 +50,9 @@ const updateTab = function() {
     tabTitle.textContent = `${currentTab}`;
     const all = allItems();
     projList.forEach(proj => {
+        if (proj.name === 'Inbox' || proj.name === 'Today' || proj.name === 'Upcoming') {
+            proj.items = []; // Preventing tasks in the wrong places
+        }
         all.forEach(item => {
             const listMap = proj.items.map(a => [a.title, a.desc, a.dueDate, a.priority, a.checklist]);
             const itemArr = [item.title, item.desc, item.dueDate, item.priority, item.checklist];
@@ -87,7 +90,7 @@ const updateTab = function() {
                     updatePage();
                 }
             })
-            upperPart.insertBefore(deleteProj, newButton)
+            upperPart.appendChild(deleteProj)
     }
     projList.forEach(proj => {
         if (proj.name !== 'Inbox' && proj.name !== 'Today' && proj.name !== 'Upcoming') {
@@ -112,7 +115,10 @@ const updateTab = function() {
     })
 }
 
+const dateInput = document.querySelector('input#dueDate');
+
 newButton.addEventListener('click', () => {
+    dateInput.value = format(startOfToday(), 'yyyy-MM-dd')
     newForm.style.display = 'grid';
     document.addEventListener('keydown', (e) => {
         if (e.key == 'Escape') {
@@ -201,8 +207,10 @@ const addItems = function() {
                     const dateInput = document.createElement('input');
                     const confirmButton = document.createElement('button');
                     function confirmDate() {
-                        item.dueDate = dateFormat(dateInput.value);
-                        updatePage();
+                        if (dateInput.checkValidity()) {
+                            item.dueDate = dateFormat(dateInput.value);
+                            updatePage();
+                        }
                     }
                     confirmButton.innerHTML = "<img src='./images/check.png'>"
                     confirmButton.classList.add('confirm-button');
@@ -292,7 +300,6 @@ if (localStorage.getItem('projects') != null) {
     })
     projList.forEach(proj => {
         storedAll.forEach(item => {
-            console.log()
             if (JSON.stringify(JSON.parse(localStorage.getItem('projects')).find((p) => p.name === proj.name).items).includes(JSON.stringify(item))) {
                 // jesus christ 
                 proj.add(item)
