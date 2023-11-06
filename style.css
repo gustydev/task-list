@@ -101,7 +101,6 @@ body {
     width: 100%;
 }
 
-
 #new-item-form {
     display: none; /* hidden by default */
     grid-template-columns: repeat(2, 1fr);
