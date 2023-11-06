@@ -54,9 +54,7 @@ const updateTab = function() {
             proj.items = []; // Preventing tasks in the wrong places
         }
         all.forEach(item => {
-            const listMap = proj.items.map(a => [a.title, a.desc, a.dueDate, a.priority, a.checklist]);
-            const itemArr = [item.title, item.desc, item.dueDate, item.priority, item.checklist];
-            if (!(JSON.stringify(listMap).includes(JSON.stringify(itemArr)))) {
+            if (!(proj.items.includes(item))) {
                 if ((proj.name === 'Inbox') || 
                     ((proj.name === 'Today' && isToday(parsed(item.dueDate)))) ||
                     ((proj.name === 'Upcoming' && parsed(item.dueDate) >= startOfTomorrow()))) {
@@ -210,6 +208,8 @@ const addItems = function() {
                         if (dateInput.checkValidity()) {
                             item.dueDate = dateFormat(dateInput.value);
                             updatePage();
+                        } else {
+                            alert('That is not a valid date. Please try again.')
                         }
                     }
                     confirmButton.innerHTML = "<img src='./images/check.png'>"
@@ -252,7 +252,7 @@ submitButton.addEventListener('click', (e) => {
         updatePage();
         newForm.reset();
     } else {
-        alert('Please fill the task name and date fields.')
+        alert('Please fill the task name field.')
     }
 })
 

@@ -10,10 +10,6 @@ class Project {
     }
     remove(item) {
         this.items = this.items.filter(a => a != item);
-        // const index = this.itemList.indexOf(item);
-        // if (index > -1) {
-        //     this.itemList.splice(index, 1);
-        // }
     }
 }
 
