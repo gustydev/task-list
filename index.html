@@ -1,56 +1,69 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="style.css">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="style.css" />
     <title>Task List</title>
-</head>
-<body>
+  </head>
+  <body>
     <div class="main">
-        <div class="top">
-            <div class="title">📃Task List</div>
+      <div class="top">
+        <div class="title">📃Task List</div>
+      </div>
+      <div class="sidebar">
+        <div class="tab-list">
+          <button id="Inbox">Inbox</button>
+          <button id="Today">Today</button>
+          <button id="Upcoming">Upcoming</button>
+          <div class="tab-text">Projects</div>
+          <button id="new-project">New project (+)</button>
         </div>
-        <div class="sidebar">
-            <div class="tab-list">
-                <button id="Inbox">Inbox</button>
-                <button id="Today">Today</button>
-                <button id="Upcoming">Upcoming</button>
-                <div class="tab-text">Projects</div>
-                <button id="new-project">New project (+)</button>
-            </div>
+      </div>
+      <div class="content">
+        <div class="upper">
+          <div class="tab-title"></div>
+          <button id="new-task">New task</button>
         </div>
-        <div class="content">
-            <div class="upper">
-                <div class="tab-title"></div>
-                <button id="new-task">New task</button>
-            </div>
-            <div class="task-list"></div>
-        </div>
+        <div class="task-list"></div>
+      </div>
     </div>
     <form id="new-item-form">
-        <div class="form-title">New item</div>
-        <div class="form-field">
-            <input required id="title" name="title" type="text" maxlength="50" placeholder="Task name">
-        </div>
-        <div class="form-field">
-            <label for="priority">Priority:</label>
-            <select name="priority" id="priority">
-                <option value="low">Low</option>
-                <option value="mid">Medium</option>
-                <option value="high">High</option>
-            </select>
-        </div>
-        <div class="form-field">
-            <label for="dueDate">Due date:</label>
-            <input required id="dueDate" name="dueDate" type="date">
-        </div>
-        <div class="form-field">
-            <textarea id="desc" name="desc" maxlength="100" placeholder="Description (optional)" rows="3"></textarea>
-        </div>
-        <button type="submit" id="submit">Add</button>
-        <button id="cancel">Cancel</button>
+      <div class="form-title">New item</div>
+      <div class="form-field">
+        <input
+          required
+          id="title"
+          name="title"
+          type="text"
+          maxlength="50"
+          placeholder="Task name"
+        />
+      </div>
+      <div class="form-field">
+        <label for="priority">Priority:</label>
+        <select name="priority" id="priority">
+          <option value="low">Low</option>
+          <option value="mid">Medium</option>
+          <option value="high">High</option>
+        </select>
+      </div>
+      <div class="form-field">
+        <label for="dueDate">Due date:</label>
+        <input required id="dueDate" name="dueDate" type="date" />
+      </div>
+      <div class="form-field">
+        <textarea
+          id="desc"
+          name="desc"
+          maxlength="100"
+          placeholder="Description (optional)"
+          rows="3"
+        ></textarea>
+      </div>
+      <button type="submit" id="submit">Add</button>
+      <button id="cancel">Cancel</button>
     </form>
-</body>
-<script src="main.js"></script>
+  </body>
+  <script src="main.js"></script>
 </html>
