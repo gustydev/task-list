@@ -1,3 +1,4 @@
+/* eslint-disable no-restricted-syntax */ // Chato pakas
 import {
   format,
   isToday,
@@ -62,7 +63,7 @@ const updateTab = function updateTab() {
       proj.name === "Today" ||
       proj.name === "Upcoming"
     ) {
-      proj.items = []; // Preventing tasks in the wrong places
+      proj.items = [];
     }
     all.forEach((item) => {
       if (!proj.items.includes(item)) {
@@ -164,7 +165,7 @@ const addItems = function () {
     const itemDiv = document.createElement("div");
     itemDiv.classList.add("task");
     for (const [key, value] of Object.entries(item)) {
-      if (key == "checklist") {
+      if (key === "checklist") {
         const dataDiv = document.createElement("input");
         dataDiv.type = "checkbox";
         dataDiv.classList.add("task-checklist");
@@ -183,9 +184,9 @@ const addItems = function () {
         dataDiv.textContent = `${value}`;
         if (key == "priority") {
           dataDiv.addEventListener("click", () => {
-            if (item.priority == "low") {
+            if (item.priority === "low") {
               item.priority = "mid";
-            } else if (item.priority == "mid") {
+            } else if (item.priority === "mid") {
               item.priority = "high";
             } else {
               item.priority = "low";
@@ -248,10 +249,10 @@ const addItems = function () {
               editButton.style.visibility = "hidden";
             }
           });
-        } else if (key == "dueDate") {
+        } else if (key === "dueDate") {
           const dateInput = document.createElement("input");
           const confirmButton = document.createElement("button");
-          function confirmDate() {
+          const confirmDate = function confirmDate() {
             if (dateInput.checkValidity()) {
               item.dueDate = dateFormat(dateInput.value);
               updatePage();
@@ -322,21 +323,18 @@ cancelButton.addEventListener("click", (e) => {
 
 const newProject = document.querySelector("button#new-project");
 newProject.addEventListener("click", () => {
-  let projName = prompt("Name your project:");
+  const projName = prompt("Name your project:");
   if (
     !projList.map((a) => a.name).includes(projName) &&
     projName.length !== 0 &&
     projName !== "new-project" &&
     projName !== "new project" &&
-    isNaN(projName[0])
+    isNaN(projName[0]) &&
+    /^[a-zA-Z0-9]+$/.test(projName) // Name must be alphanumeric
   ) {
     projList.push(new Project(projName, []));
     currentTab = projName;
     updatePage();
-  } else if (projName.length === 0) {
-    alert("Projects must have a name. Please try again.");
-  } else if (!isNaN(projName[0])) {
-    alert("Project name cannot start with a number. Please try again.");
   } else {
     alert("Name is already in use or invalid. Please try again.");
   }
@@ -376,7 +374,6 @@ if (localStorage.getItem("projects") != null) {
           ).items,
         ).includes(JSON.stringify(item))
       ) {
-        // jesus christ
         proj.add(item);
       }
     });
