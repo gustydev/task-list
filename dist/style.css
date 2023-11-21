@@ -136,7 +136,7 @@ body {
 
 .main {
   display: grid;
-  grid-template-columns: 1fr 7fr;
+  grid-template-columns: 1fr 9fr;
   grid-template-rows: 1fr 9fr;
   min-height: 100vh;
 }
@@ -174,8 +174,12 @@ body {
 
 .upper {
   display: grid;
-  grid-template-columns: 8fr 1fr 1fr;
+  grid-template-columns: 8fr 1fr;
   gap: 16px;
+}
+
+button#new-task {
+  grid-column: -1;
 }
 
 .upper > button {
@@ -229,8 +233,7 @@ body {
   min-width: 25%;
 }
 
-.tab-list,
-.project-list {
+.tab-list {
   display: flex;
   flex-direction: column;
   gap: 8px;
@@ -247,8 +250,8 @@ body {
   border: 0;
   background: none;
   color: rgb(0, 0, 0);
-  font-size: 16px;
   font-weight: bold;
+  font-size: 1em;
 }
 
 .tab-list > button:hover {
@@ -356,4 +359,14 @@ body {
   align-self: end;
   position: absolute;
   top: 100%;
+}
+
+@media screen and (max-width: 700px) {
+  .main {
+    grid-template-columns: 1fr;
+    grid-template-rows: 80px 0.2fr 1fr;
+  }
+  .top {
+    justify-content: center;
+  }
 }

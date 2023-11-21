@@ -110,7 +110,7 @@ const updateTab = function updateTab() {
         updatePage();
       }
     });
-    upperPart.appendChild(deleteProj);
+    upperPart.insertBefore(deleteProj, newButton);
   }
   projList.forEach((proj) => {
     if (
@@ -182,7 +182,7 @@ const addItems = function () {
         const dataDiv = document.createElement("div");
         dataDiv.classList.add(`task-${key}`);
         dataDiv.textContent = `${value}`;
-        if (key == "priority") {
+        if (key === "priority") {
           dataDiv.addEventListener("click", () => {
             if (item.priority === "low") {
               item.priority = "mid";
@@ -193,15 +193,15 @@ const addItems = function () {
             }
             updatePage();
           });
-          if (value == "low") {
+          if (value === "low") {
             dataDiv.style.backgroundColor = "green";
-          } else if (value == "mid") {
+          } else if (value === "mid") {
             dataDiv.style.backgroundColor = "yellow";
             dataDiv.style.color = "black";
           } else {
             dataDiv.style.backgroundColor = "red";
           }
-        } else if (key == "title" || key == "desc") {
+        } else if (key === "title" || key === "desc") {
           const editButton = document.createElement("button");
           editButton.classList.add("edit-button");
           editButton.innerHTML = "<img src='./images/edit.png'>";
@@ -210,7 +210,7 @@ const addItems = function () {
             const textInput = document.createElement("input");
             const confirmButton = document.createElement("button");
             function confirm() {
-              if (key == "title") {
+              if (key === "title") {
                 item.title = textInput.value;
               } else {
                 item.desc = textInput.value;
@@ -222,11 +222,11 @@ const addItems = function () {
             textInput.placeholder = `${key}`;
             textInput.classList.add(`task-${key}`);
             textInput.addEventListener("keydown", (e) => {
-              if (e.key == "Enter") {
+              if (e.key === "Enter") {
                 confirm();
               }
             });
-            if (key == "title") {
+            if (key === "title") {
               textInput.maxLength = "50";
             } else {
               textInput.maxLength = "100";
@@ -266,7 +266,7 @@ const addItems = function () {
           dateInput.type = "date";
           dateInput.value = format(parsed(item.dueDate), "yyyy-MM-dd");
           dateInput.addEventListener("keydown", (e) => {
-            if (e.key == "Enter") {
+            if (e.key === "Enter") {
               confirmDate();
             }
           });
@@ -327,10 +327,9 @@ newProject.addEventListener("click", () => {
   if (
     !projList.map((a) => a.name).includes(projName) &&
     projName.length !== 0 &&
-    projName !== "new-project" &&
     projName !== "new project" &&
     isNaN(projName[0]) &&
-    /^[a-zA-Z0-9]+$/.test(projName) // Name must be alphanumeric
+    /^[a-zA-Z0-9_]+( [a-zA-Z0-9_]+)*$/.test(projName) // Name must be alphanumeric but spaces are allowed
   ) {
     projList.push(new Project(projName, []));
     currentTab = projName;
