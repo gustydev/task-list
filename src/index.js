@@ -1,4 +1,4 @@
-/* eslint-disable no-restricted-syntax */ // Chato pakas
+/* eslint-disable no-restricted-syntax */
 import {
   format,
   isToday,
@@ -136,12 +136,12 @@ const updateTab = function updateTab() {
         (proj) => proj.name === button.id.replaceAll("-", " "),
       ).items.length;
       if (button.id.replaceAll("-", " ") === currentTab) {
-        button.textContent = `> ${button.id.replaceAll(
+        button.textContent = `> [${tabLength}] ${button.id.replaceAll(
           "-",
           " ",
-        )} [${tabLength}]`;
+        )}`;
       } else {
-        button.textContent = `${button.id.replaceAll("-", " ")} [${tabLength}]`;
+        button.textContent = `[${tabLength}] ${button.id.replaceAll("-", " ")} `;
       }
     }
   });
@@ -324,6 +324,9 @@ cancelButton.addEventListener("click", (e) => {
 const newProject = document.querySelector("button#new-project");
 newProject.addEventListener("click", () => {
   const projName = prompt("Name your project:");
+  if (projName === null) {
+    return; // Avoid error in console
+  }
   if (
     !projList.map((a) => a.name).includes(projName) &&
     projName.length !== 0 &&
