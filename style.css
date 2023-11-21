@@ -137,8 +137,9 @@ body {
 .main {
   display: grid;
   grid-template-columns: 1fr 9fr;
-  grid-template-rows: 1fr 9fr;
+  grid-template-rows: 80px 9fr;
   min-height: 100vh;
+  background-color: white;
 }
 
 .top {
@@ -163,10 +164,10 @@ body {
   justify-content: space-between;
   gap: 16px;
   padding: 16px;
+  min-width: 160px;
 }
 
 .content {
-  background-color: #e2e2e2;
   padding: 16px;
   min-width: 75%;
   justify-self: center;
@@ -191,7 +192,7 @@ button#new-task {
   grid-template-columns: repeat(2, 1fr);
   grid-template-rows: repeat(4, 1fr) 2fr 1fr;
   align-items: start;
-  position: absolute;
+  position: fixed;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
@@ -200,7 +201,6 @@ button#new-task {
   background-color: white;
   padding: 32px 16px;
   border-radius: 4px;
-  min-height: 25%;
   min-width: 25%;
 }
 
@@ -238,6 +238,7 @@ button#new-task {
   flex-direction: column;
   gap: 8px;
   align-items: start;
+  line-break: anywhere;
 }
 
 .tab-text {
@@ -256,11 +257,16 @@ button#new-task {
 
 .tab-list > button:hover {
   color: white;
+  cursor: pointer;
 }
 
 .tab-title {
   font-size: 24px;
   font-weight: bold;
+  overflow: hidden visible;
+  white-space: nowrap;
+  padding-bottom: 250px;
+  margin-bottom: -250px; /* Needed for scroll bar to not appear on X axis */
 }
 
 .task-list {
