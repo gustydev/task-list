@@ -46,6 +46,26 @@ tabList.querySelectorAll("button").forEach((button) => {
   }
 });
 
+const projectToggle = document.querySelector('img#project-toggle');
+const displayedProj = document.getElementsByClassName('project');
+let hideProj = false; // Variable to check if new project is hidden in list or not
+
+projectToggle.addEventListener('click', () => {
+  if (projectToggle.style.transform === "rotate(0deg)") {
+    projectToggle.style.transform = "rotate(90deg)";
+    for (const proj of Object.values(displayedProj)) {
+      proj.style.display = 'initial';
+    }
+    hideProj = false;
+  } else {
+    projectToggle.style.transform = "rotate(0deg)";
+    for (const proj of Object.values(displayedProj)) {
+      proj.style.display = 'none';
+    }
+    hideProj = true;
+  }
+})
+
 function parsed(date) {
   return parse(date, "PP", new Date());
 }
@@ -121,6 +141,10 @@ const updateTab = function updateTab() {
       if (!tabList.querySelector(`button#${proj.name.replaceAll(" ", "-")}`)) {
         const newProj = document.createElement("button");
         newProj.id = proj.name.replaceAll(" ", "-");
+        newProj.classList.add('project');
+        if (hideProj) {
+          newProj.classList.add('hide');
+        }
         newProj.textContent = proj.name;
         newProj.addEventListener("click", () => {
           currentTab = newProj.id.replaceAll("-", " ");
@@ -348,6 +372,7 @@ const updatePage = function updatePage() {
   addItems();
   localStorage.setItem("projects", JSON.stringify(projList)); // Store the new project list in local
 };
+
 
 if (localStorage.getItem("projects") != null) {
   projList = [];
