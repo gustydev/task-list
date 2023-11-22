@@ -54,13 +54,13 @@ projectToggle.addEventListener('click', () => {
   if (projectToggle.style.transform === "rotate(0deg)") {
     projectToggle.style.transform = "rotate(90deg)";
     for (const proj of Object.values(displayedProj)) {
-      proj.style.display = 'initial';
+      proj.classList.remove('hide');
     }
     hideProj = false;
   } else {
     projectToggle.style.transform = "rotate(0deg)";
     for (const proj of Object.values(displayedProj)) {
-      proj.style.display = 'none';
+      proj.classList.add('hide');
     }
     hideProj = true;
   }
