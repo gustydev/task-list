@@ -241,10 +241,36 @@ button#new-task {
   line-break: anywhere;
 }
 
+#project-toggle {
+  transform: rotate(90deg);
+}
+
+#project-toggle:hover {
+  filter: invert(100%);
+}
+
+.hide {
+  display: none;
+}
+
+button#new-project {
+  display: grid;
+  grid-template-columns: 3fr 1fr;
+  align-items: center;
+  grid-gap: 2px;
+}
+
+img#new-proj-img {
+  width: 50%;
+}
+
 .tab-text {
   font-weight: bold;
   margin-top: 5%;
   font-size: 120%;
+  display: grid;
+  grid-template-columns: 3fr 1fr;
+  align-items: center;
 }
 
 .tab-list > button {
@@ -331,6 +357,7 @@ button#new-task {
 
 #new-project:hover {
   color: red;
+  filter: invert(17%) sepia(44%) saturate(7125%) hue-rotate(358deg) brightness(111%) contrast(114%);
 }
 
 .task-dueDate:hover {
