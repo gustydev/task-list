@@ -134,10 +134,11 @@ body {
   font-family: "Franklin Gothic Medium", "Arial Narrow", Arial, sans-serif;
 }
 
+
 .main {
   display: grid;
   grid-template-columns: 1fr 9fr;
-  grid-template-rows: 80px 9fr;
+  grid-template-rows: 1fr 9fr;
   min-height: 100vh;
   background-color: white;
 }
@@ -152,7 +153,7 @@ body {
 
 .title {
   margin-left: 1%;
-  font-size: 36px;
+  font-size: 2.5em;
   font-weight: bold;
   color: #eeeeee;
 }
@@ -309,7 +310,7 @@ img#new-proj-img {
     "desc desc priority date check";
   grid-gap: 8px;
   padding: 10px;
-  border: 1px double black;
+  border: 1px solid black;
   margin: 8px 0;
   border-radius: 4px;
 }
@@ -324,10 +325,12 @@ img#new-proj-img {
 .task-title {
   grid-area: title;
   font-weight: bold;
+  line-break: anywhere;
 }
 
 .task-desc {
   grid-area: desc;
+  line-break:anywhere;
 }
 
 .task-dueDate {
@@ -353,6 +356,7 @@ img#new-proj-img {
 .task-checklist {
   grid-area: check;
   align-self: center;
+  cursor: pointer;
 }
 
 #new-project:hover {
