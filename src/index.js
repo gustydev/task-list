@@ -190,9 +190,13 @@ const addItems = function () {
     itemDiv.classList.add("task");
     for (const [key, value] of Object.entries(item)) {
       if (key === "checklist") {
-        const dataDiv = document.createElement("input");
-        dataDiv.type = "checkbox";
+        const dataDiv = document.createElement("img");
         dataDiv.classList.add("task-checklist");
+        dataDiv.src = 'images/box-unchecked.svg';
+        dataDiv.addEventListener('mouseover', () => {
+          dataDiv.src = 'images/box-checked.svg';
+          dataDiv.addEventListener('mouseleave', () => { dataDiv.src = 'images/box-unchecked.svg'; })
+        })
         dataDiv.addEventListener("click", () => {
           projList.forEach((proj) => {
             if (proj.items.includes(item)) {
@@ -228,7 +232,7 @@ const addItems = function () {
         } else if (key === "title" || key === "desc") {
           const editButton = document.createElement("button");
           editButton.classList.add("edit-button");
-          editButton.innerHTML = "<img src='./images/edit.png'>";
+          editButton.innerHTML = "<img src='./images/edit.svg'>";
           editButton.style.visibility = "hidden"; // By default, hidden
           editButton.addEventListener("click", () => {
             const textInput = document.createElement("input");
@@ -255,7 +259,7 @@ const addItems = function () {
             } else {
               textInput.maxLength = "100";
             }
-            confirmButton.innerHTML = "<img src='./images/check.png'>";
+            confirmButton.innerHTML = "<img src='./images/check.svg'>";
             confirmButton.classList.add("confirm-button");
             confirmButton.addEventListener("click", confirm);
             dataDiv.textContent = "";
@@ -284,7 +288,7 @@ const addItems = function () {
               alert("That is not a valid date. Please try again.");
             }
           }
-          confirmButton.innerHTML = "<img src='./images/check.png'>";
+          confirmButton.innerHTML = "<img src='./images/check.svg'>";
           confirmButton.classList.add("confirm-button");
           confirmButton.addEventListener("click", confirmDate);
           dateInput.type = "date";
@@ -356,7 +360,8 @@ newProject.addEventListener("click", () => {
     projName.length !== 0 &&
     projName !== "new project" &&
     isNaN(projName[0]) &&
-    /^[a-zA-Z0-9_]+( [a-zA-Z0-9_]+)*$/.test(projName) // Name must be alphanumeric but spaces are allowed
+    /^[a-zA-Z0-9_]+( [a-zA-Z0-9_]+)*$/.test(projName) && // Name must be alphanumeric but spaces are allowed
+    projName.length <= 50
   ) {
     projList.push(new Project(projName, []));
     currentTab = projName;
