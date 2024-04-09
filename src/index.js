@@ -222,12 +222,14 @@ const addItems = function () {
             updatePage();
           });
           if (value === "low") {
-            dataDiv.style.backgroundColor = "green";
+            dataDiv.style.backgroundColor = "#008000";
+            dataDiv.style.color = 'white';
           } else if (value === "mid") {
-            dataDiv.style.backgroundColor = "yellow";
+            dataDiv.style.backgroundColor = "#FFFF00";
             dataDiv.style.color = "black";
           } else {
-            dataDiv.style.backgroundColor = "red";
+            dataDiv.style.backgroundColor = "#E10000";
+            dataDiv.style.color = 'white';
           }
         } else if (key === "title" || key === "desc") {
           const editButton = document.createElement("button");
