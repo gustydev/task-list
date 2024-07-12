@@ -101,24 +101,35 @@ newButton.addEventListener("click", () => {
 
 submitButton.addEventListener("click", (e) => {
   e.preventDefault();
-  if (dueDate.value.length > 10) {
-    alert("Please enter a 4-digit year (maximum: 9999).");
-  } else if (newForm.checkValidity()) {
+
+  let date;
+  let dateYearIsValid = true;
+  
+  try {
+    date = dateFormat(dueDate.value);
+  } catch {
+    dateYearIsValid = false;
+  }
+
+  if (newForm.checkValidity() && dateYearIsValid) {
     newForm.style.display = "none";
+
     if (currentTab === '0' || currentTab === '1') {
       currentTab = '0';
     }
     updateTab();
+
     itemList.push(
       new Item(
         crypto.randomUUID(),
         title.value,
         desc.value,
-        dateFormat(dueDate.value),
+        date,
         priority.value,
         false,
       ),
     );
+
     updatePage();
     newForm.reset();
   } else {
@@ -389,11 +400,11 @@ const addItems = function addItems() {
           const confirmButton = document.createElement("button");
 
           const confirmDate = function confirmDate() {
-            if (taskDateInput.checkValidity()) {
-              item.dueDate = dateFormat(taskDateInput.value);
+             try {
+              item.dueDate = dateFormat(taskDateInput.value)
               updatePage();
-            } else {
-              alert("That is not a valid date. Please try again.");
+            } catch {
+              alert('Invalid date, please try again.')
             }
           }
 
