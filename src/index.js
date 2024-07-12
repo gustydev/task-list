@@ -19,14 +19,14 @@ const upperPart = document.querySelector("div.upper");
 
 let projList = [];
 
-let currentTab = "Inbox"; // Default
+let currentTab = '0'; // Default
 let itemList;
 
 const allItems = function allItems() {
   const all = [];
   projList.forEach((project) => {
     project.items.forEach((item) => {
-      if (!JSON.stringify(all).includes(JSON.stringify(item))) {
+      if (!all.find(i => i.id === item.id)) {
         all.push(item);
       }
     });
@@ -37,14 +37,21 @@ const allItems = function allItems() {
 tabList.querySelectorAll("button").forEach((button) => {
   if (!(button.id === "new-project")) {
     button.addEventListener("click", () => {
-      currentTab = button.id;
+      currentTab = button.id.slice(8);
       updatePage();
     });
-    if (projList.length < 3) {
-      projList.push(new Project(`${button.id}`, []));
-    }
   }
 });
+
+let projectId;
+if (projList.length < 3) {
+  const [inbox, today, upcoming] = [
+    new Project('0', 'Inbox', []),
+    new Project('1', 'Today', []),
+    new Project('2', 'Upcoming', [])
+  ]
+  projList.push(inbox, today, upcoming);
+}
 
 const projectToggle = document.querySelector('img#project-toggle');
 const displayedProj = document.getElementsByClassName('project');
@@ -75,49 +82,48 @@ function dateFormat(date) {
 }
 
 const updateTab = function updateTab() {
-  tabTitle.textContent = `${currentTab}`;
+  tabTitle.textContent = projList.find(p => p.id === currentTab).name;
   const all = allItems();
   projList.forEach((proj) => {
     if (
-      proj.name === "Inbox" ||
-      proj.name === "Today" ||
-      proj.name === "Upcoming"
+      proj.id === '0' ||
+      proj.id === '1' ||
+      proj.id === '2'
     ) {
-      proj.items = [];
+      proj.clear();
     }
     all.forEach((item) => {
       if (!proj.items.includes(item)) {
         if (
-          proj.name === "Inbox" ||
-          (proj.name === "Today" && isToday(parsed(item.dueDate))) ||
-          (proj.name === "Upcoming" &&
-            parsed(item.dueDate) >= startOfTomorrow())
+          proj.id === '0' ||
+          (proj.id === '1' && isToday(parsed(item.dueDate))) ||
+          (proj.id === '2' && parsed(item.dueDate) >= startOfTomorrow())
         ) {
           proj.add(item);
         }
       }
     });
   });
-  itemList = projList.find((element) => element.name === currentTab).items;
+  itemList = projList.find((proj) => proj.id === currentTab).items;
   if (upperPart.querySelector("button#project-delete")) {
     upperPart.removeChild(document.getElementById("project-delete")); // Preventing duplicates
   }
   if (
-    currentTab !== "Inbox" &&
-    currentTab !== "Today" &&
-    currentTab !== "Upcoming"
+    currentTab !== '0' &&
+    currentTab !== '1' &&
+    currentTab !== '2'
   ) {
-    const currentProj = projList.find((proj) => proj.name === currentTab);
+    const currentProj = projList.find((proj) => proj.id === currentTab);
     const deleteProj = document.createElement("button");
     deleteProj.textContent = "Delete project";
     deleteProj.id = "project-delete";
     deleteProj.addEventListener("click", () => {
-      const currentId = currentProj.name.replaceAll(" ", "-");
+      const currentId = currentProj.id;
       const output = confirm(
-        `Are you sure you want to delete the ${currentProj.name} project? This cannot be undone!`,
+        `Are you sure you want to delete the ${currentProj.name} project (and all of its tasks)? This cannot be undone!`,
       );
       if (output) {
-        projList = projList.filter((a) => a.name !== currentProj.name);
+        projList = projList.filter((a) => a.id !== currentProj.id);
         currentProj.items.forEach((item) => {
           projList.forEach((proj) => {
             if (proj.items.includes(item)) {
@@ -125,8 +131,8 @@ const updateTab = function updateTab() {
             }
           });
         });
-        tabList.removeChild(document.getElementById(`${currentId}`));
-        currentTab = "Inbox";
+        tabList.removeChild(document.getElementById(`project-${currentId}`));
+        currentTab = '0';
         updatePage();
       }
     });
@@ -134,20 +140,20 @@ const updateTab = function updateTab() {
   }
   projList.forEach((proj) => {
     if (
-      proj.name !== "Inbox" &&
-      proj.name !== "Today" &&
-      proj.name !== "Upcoming"
+      proj.id !== 0 &&
+      proj.id !== 1 &&
+      proj.id !== 2
     ) {
-      if (!tabList.querySelector(`button#${proj.name.replaceAll(" ", "-")}`)) {
+      if (!tabList.querySelector(`button#project-${proj.id}`)) {
         const newProj = document.createElement("button");
-        newProj.id = proj.name.replaceAll(" ", "-");
+        newProj.id = `project-${proj.id}`;
         newProj.classList.add('project');
         if (hideProj) {
           newProj.classList.add('hide');
         }
         newProj.textContent = proj.name;
         newProj.addEventListener("click", () => {
-          currentTab = newProj.id.replaceAll("-", " ");
+          currentTab = proj.id;
           updatePage();
         });
         tabList.insertBefore(newProj, newProject);
@@ -156,17 +162,16 @@ const updateTab = function updateTab() {
   });
   tabList.querySelectorAll("button").forEach((button) => {
     if (!(button.id === "new-project")) {
+      const idFromButton = button.id.slice(8);
       const tabLength = projList.find(
-        (proj) => proj.name === button.id.replaceAll("-", " "),
+        (proj) => proj.id === idFromButton,
       ).items.length;
-      if (button.id.replaceAll("-", " ") === currentTab) {
-        button.textContent = `> [${tabLength}] ${button.id.replaceAll(
-          "-",
-          " ",
-        )}`;
+      if (idFromButton === currentTab) {
+        button.textContent = `> [${tabLength}]`;
       } else {
-        button.textContent = `[${tabLength}] ${button.id.replaceAll("-", " ")} `;
+        button.textContent = `[${tabLength}]`;
       }
+      button.textContent += ` ${projList.find(p => p.id === idFromButton).name}`
     }
   });
 };
@@ -188,7 +193,7 @@ const addItems = function () {
   itemList.forEach((item) => {
     const itemDiv = document.createElement("div");
     itemDiv.classList.add("task");
-    for (const [key, value] of Object.entries(item)) {
+    for (const [key, value] of Object.entries(item).splice(1)) { // Splicing to ignore the id
       if (key === "checklist") {
         const dataDiv = document.createElement("img");
         dataDiv.classList.add("task-checklist");
@@ -324,12 +329,13 @@ submitButton.addEventListener("click", (e) => {
     alert("Please enter a 4-digit year (maximum: 9999).");
   } else if (newForm.checkValidity()) {
     newForm.style.display = "none";
-    if (currentTab === "Today" || currentTab === "Upcoming") {
-      currentTab = "Inbox";
+    if (currentTab === '0' || currentTab === '1') {
+      currentTab = '0';
     }
     updateTab();
     itemList.push(
       new Item(
+        crypto.randomUUID(),
         title.value,
         desc.value,
         dateFormat(dueDate.value),
@@ -358,18 +364,15 @@ newProject.addEventListener("click", () => {
     return; // Avoid error in console
   }
   if (
-    !projList.map((a) => a.name).includes(projName) &&
     projName.length !== 0 &&
-    projName !== "new project" &&
-    isNaN(projName[0]) &&
-    /^[a-zA-Z0-9_]+( [a-zA-Z0-9_]+)*$/.test(projName) && // Name must be alphanumeric but spaces are allowed
     projName.length <= 50
   ) {
-    projList.push(new Project(projName, []));
-    currentTab = projName;
+    const newProject = new Project(crypto.randomUUID(), projName, []);
+    projList.push(newProject);
+    currentTab = newProject.id;
     updatePage();
   } else {
-    alert("Name is already in use or invalid. Please try again.");
+    alert("Project name must be between 1 and 50 characters. Please try again");
   }
 });
 
@@ -387,6 +390,7 @@ if (localStorage.getItem("projects") != null) {
   JSON.parse(localStorage.getItem("projects")).forEach((p) => {
     p.items.forEach((i) => {
       const newItem = new Item(
+        i.id,
         i.title,
         i.desc,
         i.dueDate,
@@ -397,14 +401,14 @@ if (localStorage.getItem("projects") != null) {
         storedAll.push(newItem);
       }
     });
-    projList.push(new Project(p.name, []));
+    projList.push(new Project(p.id, p.name, []));
   });
   projList.forEach((proj) => {
     storedAll.forEach((item) => {
       if (
         JSON.stringify(
           JSON.parse(localStorage.getItem("projects")).find(
-            (p) => p.name === proj.name,
+            (p) => p.id === proj.id,
           ).items,
         ).includes(JSON.stringify(item))
       ) {

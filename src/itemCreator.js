@@ -1,5 +1,6 @@
 class Item {
-  constructor(title, desc, dueDate, priority, checklist) {
+  constructor(id, title, desc, dueDate, priority, checklist) {
+    this.id = id;
     this.title = title;
     this.desc = desc;
     this.dueDate = dueDate;

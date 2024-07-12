@@ -1,7 +1,8 @@
 import Item from "./itemCreator.js";
 
 class Project {
-  constructor(name, items) {
+  constructor(id, name, items) {
+    this.id = id;
     this.name = name;
     this.items = items;
   }
@@ -10,6 +11,9 @@ class Project {
   }
   remove(item) {
     this.items = this.items.filter((a) => a != item);
+  }
+  clear() {
+    this.items = [];
   }
 }
 
