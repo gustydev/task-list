@@ -23,6 +23,8 @@ const dateInput = document.querySelector("input#dueDate"); // For the new item f
 const submitButton = document.querySelector("button#submit");
 const cancelButton = document.querySelector("button#cancel");
 const newProject = document.querySelector("button#new-project");
+const sidebarToggle = document.querySelector('img.sidebar-toggle');
+const sidebar = document.querySelector('div.sidebar');
 
 // Global variables
 let hideProj = false; // Variable to check if new project is hidden in list or not
@@ -71,6 +73,15 @@ tabList.querySelectorAll("button").forEach((button) => {
     });
   }
 });
+
+sidebarToggle.addEventListener('click', () => {
+  sidebar.classList.toggle('hidden')
+  if (sidebarToggle.style.transform === 'rotate(0deg)') {
+    sidebarToggle.style.transform = 'rotate(90deg)'
+  } else {
+    sidebarToggle.style.transform = 'rotate(0deg)'
+  }
+})
 
 projectToggle.addEventListener('click', () => {
   if (projectToggle.style.transform === "rotate(0deg)") {
